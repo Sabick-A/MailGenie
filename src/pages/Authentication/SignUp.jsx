@@ -8,6 +8,7 @@ import ErrorModal from "../../components/Elements/ErrorModal";
 import LogoDark from "../../assets/images/logo/logo-dark.png";
 import Logo from "../../assets/images/logo/logo.png";
 import Loader2 from "../../common/Loader2";
+import databaseService from "../../appwrite/database";
 
 const SignUp = () => {
     const {
@@ -26,8 +27,9 @@ const SignUp = () => {
         try {
             const session = await authService.createAccount(data);
             if (session) {
-                const userData = await authService.getCurrentUser();
-                if (userData) {
+                const user = await authService.getCurrentUser();
+                if (user) {
+                    const userData=await databaseService.createUser({id:user.$id,name:user.name,email:user.email});
                     dispatch(login(userData));
                 }
                 setLoading(false);

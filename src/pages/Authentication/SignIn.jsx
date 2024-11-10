@@ -8,6 +8,7 @@ import ErrorModal from "../../components/Elements/ErrorModal";
 import LogoDark from "../../assets/images/logo/logo-dark.png";
 import Logo from "../../assets/images/logo/logo.png";
 import Loader2 from "../../common/Loader2";
+import databaseService from "../../appwrite/database";
 
 const SignIn = () => {
     const navigate = useNavigate();
@@ -27,8 +28,9 @@ const SignIn = () => {
         try {
             const session = await authService.login(data);
             if (session) {
-                const userData = await authService.getCurrentUser();
+                const user = await authService.getCurrentUser();
                 if (userData) {
+                    const userData= await databaseService.getUser(user.$id);
                     dispatch(storeLogin(userData));
                 }
                 setLoading(false);

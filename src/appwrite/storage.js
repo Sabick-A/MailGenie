@@ -1,5 +1,5 @@
 import { Client,Storage,ID} from "appwrite";
-import conf from "../conf/conf";
+import conf from "../conf/appwriteConf";
 
 
 export class StorageService{

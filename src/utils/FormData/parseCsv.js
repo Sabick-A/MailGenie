@@ -13,7 +13,7 @@ function parseData(inputData) {
     // Define standard column names for matching
     const standardColumns = {
       name: ['name', 'Name', 'Full Name'],
-      companyName: ['Company name', 'Organization name','company name','Company Name','company Name','Company','company'],
+      companyName: ['Company name','companyName', 'Organization name','company name','Company Name','company Name','Company','company'],
       email: ['email','Email','Email Address','email address'],
       location: ['location','Location','Location of the company','location of the company','Location of the Company','location of the Company'],
       products: ['products','Products','Products Offered','Products of the company','products of the company','Products of the Company','products of the Company']
@@ -63,14 +63,12 @@ function parseData(inputData) {
           result.data.push(parsedRow);
       }
     });
-    console.log("parsed data", result);
     return result;
   }
   
 const parseCsv = (file) => {
     return new Promise((resolve, reject) => {
         try {
-            console.log("parsing started");
             Papa.parse(file, {
                 header: true,
                 complete: function (results) {

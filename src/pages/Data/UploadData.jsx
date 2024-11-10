@@ -1,22 +1,25 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { parseCsv } from "../../utils/FormData/parseCsv.js";
+import databaseService from "../../appwrite/database.js";
+import { useDispatch, useSelector } from "react-redux";
 
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import SelectOne from "../../components/FormElements/SelectOne";
 import ErrorModal from "../../components/Elements/ErrorModal";
+import { updateData } from "../../store/authSlice.js";
+import DataTable from "../../components/Data/DataTable.jsx";
 
 function UploadData() {
     const [selectedOption, setSelectedOption] = useState("");
     const { register, handleSubmit, watch } = useForm();
     const [error, setError] = useState("");
-
+    const dispatch = useDispatch();
     const [parsedData, setParsedData] = useState(null);
-
+    const userData = useSelector((state) => state.auth.userData);
     const closeModal = () => {
         setError(null);
     };
-
     const handleData = async (data) => {
         setError(null);
         if (selectedOption === "CSV File Upload") {
@@ -24,14 +27,48 @@ function UploadData() {
             if (file) {
                 const response = await parseCsv(file);
                 response.name = data.name;
+                response.userId = userData.$id;
                 setParsedData(response);
-                console.log(parsedData);
             } else {
                 setError("Please upload a CSV file");
             }
         }
-        console.log(parsedData);
+        if (selectedOption === "Google Sheets Url") {
+            const url = data.gSheetUrl;
+            if (url) {
+                const spreadsheetId = url.split("/d/")[1].split("/")[0];
+                console.log(spreadsheetId);
+            } else {
+                setError("Please enter a Google Sheets URL");
+            }
+        }
     };
+
+    const saveData = async () => {
+        setError(null);
+        try {
+            const batch = await databaseService.createBatch(parsedData);
+
+            if (batch) {
+                const updatedUserData = { ...userData };
+                updatedUserData.batches = updatedUserData.batches
+                    ? [...updatedUserData.batches, batch.$id]
+                    : [batch.$id];
+
+                const updatedData = await databaseService.updateUser(
+                    userData.$id,
+                    { batches: updatedUserData.batches }
+                );
+
+                dispatch(updateData(updatedData));
+                console.log("Data saved successfully");
+            }
+        } catch (error) {
+            console.error("Error saving data:", error);
+            setError(error.message);
+        }
+    };
+
     return (
         <>
             <Breadcrumb pageName="Upload Data" />
@@ -84,7 +121,7 @@ function UploadData() {
                                         type="text"
                                         placeholder="Google Sheet Url"
                                         className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                        {...register("gsheetUrl")}
+                                        {...register("gSheetUrl")}
                                     />
                                 </div>
                             )}
@@ -100,109 +137,28 @@ function UploadData() {
 
                 {parsedData && (
                     <>
-                        <h2 className="text-title-md2 font-semibold text-black dark:text-white">
-                            Data Preview
-                        </h2>
-                        <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-                            <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-                                {parsedData.name}
-                            </h4>
-                            <div className="flex flex-col overflow-x-auto">
-                                <div className="min-w-full grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-6">
-                                    <div className="p-2.5 xl:p-5">
-                                        <h5 className="text-sm font-medium uppercase xsm:text-base">
-                                            Name
-                                        </h5>
-                                    </div>
-                                    <div className="p-2.5 xl:p-5">
-                                        <h5 className="text-sm font-medium uppercase xsm:text-base">
-                                            Company Name
-                                        </h5>
-                                    </div>
-                                    <div className="p-2.5 text-center xl:p-5">
-                                        <h5 className="text-sm font-medium uppercase xsm:text-base">
-                                            Email
-                                        </h5>
-                                    </div>
-                                    <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                                        <h5 className="text-sm font-medium uppercase xsm:text-base">
-                                            Location
-                                        </h5>
-                                    </div>
-                                    <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                                        <h5 className="text-sm font-medium uppercase xsm:text-base">
-                                            Products
-                                        </h5>
-                                    </div>
-                                    <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                                        <h5 className="text-sm font-medium uppercase xsm:text-base">
-                                            Others
-                                        </h5>
-                                    </div>
-                                </div>
-
-                                {parsedData.data.map((dataRow, index) => (
-                                    <div
-                                        className={`min-w-full grid grid-cols-3 sm:grid-cols-6 ${
-                                            index === parsedData.data.length - 1
-                                                ? ""
-                                                : "border-b border-stroke dark:border-strokedark"
-                                        }`}
-                                        key={index}
-                                    >
-                                        <div className="flex items-center justify-center p-2.5 xl:p-5">
-                                            <p className="text-black dark:text-white">
-                                                {dataRow.name || "N/A"}
-                                            </p>
-                                        </div>
-                                        <div className="flex items-center justify-center p-2.5 xl:p-5">
-                                            <p className="text-black dark:text-white">
-                                                {dataRow.companyName || "N/A"}
-                                            </p>
-                                        </div>
-                                        <div className="flex items-center justify-center p-2.5 xl:p-5">
-                                            <p className="text-black dark:text-white">
-                                                {dataRow.email || "N/A"}
-                                            </p>
-                                        </div>
-                                        <div className="hidden sm:flex items-center justify-center p-2.5 xl:p-5">
-                                            <p className="text-black dark:text-white">
-                                                {dataRow.location || "N/A"}
-                                            </p>
-                                        </div>
-                                        <div className="hidden sm:flex items-center justify-center p-2.5 xl:p-5">
-                                            <p className="text-black dark:text-white">
-                                                {dataRow.products || "N/A"}
-                                            </p>
-                                        </div>
-                                        <div className="hidden sm:flex items-center justify-center p-2.5 xl:p-5">
-                                            <p className="text-black dark:text-white">
-                                                {dataRow.others.length > 0
-                                                    ? dataRow.others.join(", ")
-                                                    : "N/A"}
-                                            </p>
-                                        </div>
-                                    </div>
-                                ))}
+                        <div className="w-full flex justify-between">
+                            <span className="mb-6 text-2xl font-semibold text-black dark:text-white">
+                                Data Preview
+                            </span>
+                            <div className="flex gap-10 mb-5  ">
+                                <button
+                                    onClick={saveData}
+                                    type="button"
+                                    className="inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                                >
+                                    Save Data
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setParsedData(null)}
+                                    className="inline-flex items-center justify-center rounded-md bg-red-400 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                                >
+                                    Reset Data
+                                </button>
                             </div>
-                            {parsedData.errors.length > 0 && (
-                                <div className="my-4 text-red-500">
-                                    <h5 className="text-lg font-medium">
-                                        Errors Occured While Parsing:
-                                    </h5>
-                                    <ul className="px-10">
-                                        {parsedData.errors.map(
-                                            (error, index) => (
-                                                <li key={index}>
-                                                    {error.message} (Row:{" "}
-                                                    {error.row})
-                                                </li>
-                                            )
-                                        )}
-                                    </ul>
-                                </div>
-                            )}
                         </div>
+                        <DataTable parsedData={parsedData} />
                     </>
                 )}
             </div>

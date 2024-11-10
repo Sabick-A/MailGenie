@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 
 import { login, logout } from "./store/authSlice";
 import authService from "./appwrite/auth";
+import databaseService from "./appwrite/database";
 
 import Loader from "./common/Loader";
 import DefaultLayout from "./layout/DefaultLayout";
@@ -12,6 +13,7 @@ import UploadData from "./pages/Data/UploadData";
 import SignIn from "./pages/Authentication/SignIn";
 import SignUp from "./pages/Authentication/SignUp";
 import AuthLayout from "./components/Auth/AuthLayout";
+import EmailGenerator from "./pages/Data/EmailGenerator";
 
 function App() {
     const [loading, setLoading] = useState(true);
@@ -24,20 +26,24 @@ function App() {
 
     const dispatch = useDispatch();
 
+    const checkUser = async () => {
+        try {
+            const user = await authService.getCurrentUser();
+            if (user) {
+                const userData = await databaseService.getUser(user.$id);
+                dispatch(login(userData));
+            } else {
+                dispatch(logout());
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setTimeout(() => setLoading(false), 1000);
+        }
+    };
+
     useEffect(() => {
-        authService
-            .getCurrentUser()
-            .then((userData) => {
-                if (userData) {
-                    dispatch(login(userData));
-                } else {
-                    dispatch(logout());
-                }
-            })
-            .catch((err) => console.log(err))
-            .finally(() => {
-                setTimeout(() => setLoading(false), 1000);
-            });
+        checkUser();
     }, []);
 
     return loading ? (
@@ -86,6 +92,17 @@ function App() {
                                 <AuthLayout authentication={true}>
                                     <PageTitle title="Upload Data | Mail Genie" />
                                     <UploadData />
+                                </AuthLayout>
+                            </>
+                        }
+                    />
+                    <Route
+                        path="/data/generate"
+                        element={
+                            <>
+                                <AuthLayout authentication={true}>
+                                    <PageTitle title="Generate Email | Mail Genie" />
+                                    <EmailGenerator/>
                                 </AuthLayout>
                             </>
                         }
