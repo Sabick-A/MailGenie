@@ -67,6 +67,7 @@ export class DatabaseService{
                 {
                     name : data.name,
                     data : data.data,
+                    prompt : data.prompt,
                 }
             )
         } catch (error) {
