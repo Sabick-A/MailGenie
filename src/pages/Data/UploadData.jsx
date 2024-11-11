@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { parseCsv } from "../../utils/FormData/parseCsv.js";
 import databaseService from "../../appwrite/database.js";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,9 @@ import ErrorModal from "../../components/Elements/ErrorModal";
 import { updateData } from "../../store/authSlice.js";
 import DataTable from "../../components/Data/DataTable.jsx";
 
+import processEntries from "../../utils/Groq/processEntries.js";
+import Loader from "../../common/Loader2/index.jsx";
+
 function UploadData() {
     const [selectedOption, setSelectedOption] = useState("");
     const {
@@ -17,12 +20,14 @@ function UploadData() {
         handleSubmit,
         setValue,
         getValues,
+        reset,
         formState: { errors },
     } = useForm();
     const [error, setError] = useState("");
     const dispatch = useDispatch();
     const [parsedData, setParsedData] = useState(null);
     const [showPreview, setShowPreview] = useState(false);
+    const [loading,setLoading]=useState(false);
     const userData = useSelector((state) => state.auth.userData);
     const closeModal = () => {
         setError(null);
@@ -39,7 +44,7 @@ function UploadData() {
                     response.name = getValues("name");
                     response.userId = userData.$id;
                     response.columns = Object.keys(response.data[0]).filter(column => column !== 'email');
-                    setParsedData(response);
+                    setParsedData(response)
                 } catch (error) {
                     setError(error.message);
                 }
@@ -59,18 +64,22 @@ function UploadData() {
             //         }
             //     }
         }
+        
     };
+
 
     const saveData = async (data) => {
         setError(null);
+        setLoading(true);
         try {
             for(const column of parsedData.columns){
                 if(!data.prompt.includes(`{{${column}}}`)){
                     throw new Error(`Prompt is missing {{${column}}}`);
                 }
             }
+            const processedData= await processEntries(parsedData, data.prompt);
             const batch = await databaseService.createBatch({
-                data: parsedData.data,
+                data: processedData.data,
                 name: data.name,
                 prompt: data.prompt,
             });
@@ -87,10 +96,15 @@ function UploadData() {
 
                 dispatch(updateData(updatedData));
                 console.log("Data saved successfully");
+                reset(); // Reset the form after successful submission
+                setParsedData(null);
             }
         } catch (error) {
             console.error("Error saving data:", error);
             setError(error.message);
+        }
+        finally{
+            setLoading(false);
         }
     };
 
@@ -101,6 +115,7 @@ function UploadData() {
 
     return (
         <>
+            {loading &&<Loader/>}
             <Breadcrumb pageName="Upload Data" />
             {error && <ErrorModal {...{ error, closeModal }} />}
             <form onSubmit={handleSubmit(saveData)}>
@@ -226,7 +241,7 @@ function UploadData() {
 
             {showPreview && parsedData && (
                 <>
-                    <div className="mt-10  w-11/12">
+                    <div className="mt-10  w-full">
                         <h2 className="mb-6 text-2xl font-semibold text-black dark:text-white">
                             Data Preview
                         </h2>

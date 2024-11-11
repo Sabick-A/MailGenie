@@ -1,20 +1,18 @@
-import { Client, Databases ,Query,ID } from "appwrite";
+import { Client, Databases, Query, ID } from "appwrite";
 import conf from "../conf/appwriteConf";
 
+export class DatabaseService {
+    client = new Client();
+    database;
 
-export class DatabaseService{
-    client=new Client()
-    database    
-
-    constructor(){
+    constructor() {
         this.client
             .setEndpoint(conf.appwriteUrl)
             .setProject(conf.appwriteProjectId);
 
-        this.database=new Databases(this.client);
+        this.database = new Databases(this.client);
     }
-
-    async createUser({id,name,email}){
+    async createUser({ id, name, email }) {
         try {
             return await this.database.createDocument(
                 conf.appwriteDatabaseId,
@@ -24,71 +22,99 @@ export class DatabaseService{
                     name,
                     email,
                 }
-            )
+            );
         } catch (error) {
-            console.log(`Appwrite serive :: createUser :: error`,error);
+            console.log(`Appwrite serive :: createUser :: error`, error);
             throw error;
         }
     }
 
-    async getUser(userId){
-        try{
+    async getUser(userId) {
+        try {
             return await this.database.getDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteUsersCollectionId,
                 userId
-            )
-        }catch(error){
-            console.log(`Appwrite serive :: getUser :: error`,error);
+            );
+        } catch (error) {
+            console.log(`Appwrite serive :: getUser :: error`, error);
             throw error;
         }
     }
 
-    async updateUser(userId,data){
+    async updateUser(userId, data) {
         try {
             return await this.database.updateDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteUsersCollectionId,
                 userId,
                 data
-            )
+            );
         } catch (error) {
-            console.log(`Appwrite serive :: updateUser :: error`,error);
+            console.log(`Appwrite serive :: updateUser :: error`, error);
             throw error;
         }
     }
 
-    async createBatch(data){
+    async createBatch(data) {
         try {
             return await this.database.createDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteBatchCollectionId,
                 ID.unique(),
                 {
-                    name : data.name,
-                    data : data.data,
-                    prompt : data.prompt,
+                    name: data.name,
+                    data: data.data,
+                    prompt: data.prompt,
                 }
-            )
+            );
         } catch (error) {
-            console.log(`Appwrite serive :: createBatch :: error`,error);
+            console.log(`Appwrite serive :: createBatch :: error`, error);
         }
     }
 
-    async getBatch(batchId){
+    async deleteBatch(batchId) {
+        try {
+            const batchData=await this.getBatch(batchId);
+
+            await Promise.all(batchData.data.map(async (data) => {
+                await this.deleteData(data.$id);
+            }));
+
+            return await this.database.deleteDocument(
+                conf.appwriteDatabaseId,
+                conf.appwriteBatchCollectionId,
+                batchId
+            );
+        } catch (error) {
+            console.log(`Appwrite serive :: deleteBatch :: error`, error);
+        }
+    }
+
+    async getBatch(batchId) {
         try {
             return await this.database.getDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteBatchCollectionId,
                 batchId
-            )
+            );
         } catch (error) {
-            console.log(`Appwrite serive :: getBatch :: error`,error);
+            console.log(`Appwrite serive :: getBatch :: error`, error);
         }
     }
 
-    
 
+    async deleteData(dataId) {
+        try {
+            return await this.database.deleteDocument(
+                conf.appwriteDatabaseId,
+                conf.appwriteDataCollectionId,
+                dataId
+            );
+        } catch (error) {
+            console.log(`Appwrite serive :: deleteData :: error`, error);
+        }
+    }
     // async createData({title,slug,content,featuredImage,status,username,userId,summary}){
     //     try {
     //         return await this.database.createDocument(
@@ -172,7 +198,6 @@ export class DatabaseService{
     // }
 }
 
-
-const databaseService=new DatabaseService();
+const databaseService = new DatabaseService();
 
 export default databaseService;

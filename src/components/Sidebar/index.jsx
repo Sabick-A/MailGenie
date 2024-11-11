@@ -66,8 +66,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     slug: "/data/upload",
                 },
                 {
-                    title: "Email Generator",
-                    slug: "/data/generate",
+                    title: "Preview",
+                    slug: "/data/preview",
                 },
             ],
         },

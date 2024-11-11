@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import { login, logout } from "./store/authSlice";
+import { login, logout ,updateData } from "./store/authSlice";
 import authService from "./appwrite/auth";
 import databaseService from "./appwrite/database";
 
@@ -13,19 +13,12 @@ import UploadData from "./pages/Data/UploadData";
 import SignIn from "./pages/Authentication/SignIn";
 import SignUp from "./pages/Authentication/SignUp";
 import AuthLayout from "./components/Auth/AuthLayout";
-import EmailGenerator from "./pages/Data/EmailGenerator";
-
+import Preview from "./pages/Data/Preview";
+import BatchPreview from "./pages/Data/BatchPreview";
 function App() {
     const [loading, setLoading] = useState(true);
 
-    // const { pathname } = useLocation();
-
-    // useEffect(() => {
-    //     window.scrollTo(0, 0);
-    // }, [pathname]);
-
     const dispatch = useDispatch();
-
     const checkUser = async () => {
         try {
             const user = await authService.getCurrentUser();
@@ -97,12 +90,23 @@ function App() {
                         }
                     />
                     <Route
-                        path="/data/generate"
+                        path="/data/preview"
+                        element={
+                            <>
+                                <AuthLayout authentication={true}>
+                                    <PageTitle title="Preview | Mail Genie" />
+                                    <Preview/>
+                                </AuthLayout>
+                            </>
+                        }
+                    />
+                    <Route
+                        path="/data/preview/:batchIndex"
                         element={
                             <>
                                 <AuthLayout authentication={true}>
                                     <PageTitle title="Generate Email | Mail Genie" />
-                                    <EmailGenerator/>
+                                    <BatchPreview />
                                 </AuthLayout>
                             </>
                         }
