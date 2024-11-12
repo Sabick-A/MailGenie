@@ -30,11 +30,11 @@ const SignIn = () => {
             if (session) {
                 const user = await authService.getCurrentUser();
                 if (userData) {
-                    const userData= await databaseService.getUser(user.$id);
+                    const userData = await databaseService.getUser(user.$id);
                     dispatch(storeLogin(userData));
+                    setLoading(false);
+                    navigate("/");
                 }
-                setLoading(false);
-                navigate("/");
             }
         } catch (error) {
             setLoading(false);
@@ -50,7 +50,7 @@ const SignIn = () => {
 
     return (
         <>
-            { loading && <Loader2 />}
+            {loading && <Loader2 />}
             <div className="flex flex-wrap items-center justify-center flex-grow">
                 {error && <ErrorModal {...{ error, closeModal }} />}
                 <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark w-11/12">

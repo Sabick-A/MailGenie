@@ -12,6 +12,7 @@ import DataTable from "../../components/Data/DataTable.jsx";
 
 import processEntries from "../../utils/Groq/processEntries.js";
 import Loader from "../../common/Loader2/index.jsx";
+import extractKeys from "../../utils/FormData/extractKeys.js";
 
 function UploadData() {
     const [selectedOption, setSelectedOption] = useState("");
@@ -43,7 +44,8 @@ function UploadData() {
                     const response = await parseCsv(file);
                     response.name = getValues("name");
                     response.userId = userData.$id;
-                    response.columns = Object.keys(response.data[0]).filter(column => column !== 'email');
+                    console.log(response.data);
+                    response.columns = extractKeys(response.data).filter(column => column !== 'email');
                     setParsedData(response)
                 } catch (error) {
                     setError(error.message);

@@ -3,10 +3,12 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../store/authSlice";
 import authService from "../../appwrite/auth";
 import Loader2 from "../../common/Loader2";
+import { useNavigate } from "react-router-dom";
 
 function LogoutBtn() {
     const dispatch = useDispatch();
     const [loading,setLoading]=useState(false);
+    const navigate=useNavigate();
     const logouthandler = () => {
         setLoading(true);
         authService
@@ -14,6 +16,7 @@ function LogoutBtn() {
             .then(() => {
                 setLoading(false);
                 dispatch(logout());
+                navigate("/");
             })
             .catch((error) => {
                 setLoading(false);
