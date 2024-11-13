@@ -17,14 +17,34 @@ import Preview from "./pages/Data/Preview";
 import BatchPreview from "./pages/Data/BatchPreview";
 function App() {
     const [loading, setLoading] = useState(true);
-
+    
     const dispatch = useDispatch();
+    const location = useLocation();
     const checkUser = async () => {
         try {
+            const query = new URLSearchParams(location.search);
+            const userId = query.get("userId");
+            const secret = query.get("secret");
+            console.log(userId, secret);
+    
+            if(userId && secret){
+                const session=await authService.createSession({userId,secret});
+                console.log(session);
+            }
+            console.log("App.jsx loaded");
+
             const user = await authService.getCurrentUser();
             if (user) {
-                const userData = await databaseService.getUser(user.$id);
+                let userData = await databaseService.getUser(user.$id);
+                if(!userData){
+                    userData= await databaseService.createUser({
+                        id:user.$id,
+                        name:user.name,
+                        email:user.email
+                    })
+                }
                 dispatch(login(userData));
+                
             } else {
                 dispatch(logout());
             }

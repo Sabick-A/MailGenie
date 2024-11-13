@@ -29,7 +29,7 @@ const SignIn = () => {
             const session = await authService.login(data);
             if (session) {
                 const user = await authService.getCurrentUser();
-                if (userData) {
+                if (user) {
                     const userData = await databaseService.getUser(user.$id);
                     dispatch(storeLogin(userData));
                     setLoading(false);
@@ -320,7 +320,7 @@ const SignIn = () => {
                                         />
                                     </div>
 
-                                    <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
+                                    <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50" type="button" onClick={()=>authService.createAuthToken()}>
                                         <span>
                                             <svg
                                                 width="20"

@@ -38,7 +38,7 @@ export class DatabaseService {
             );
         } catch (error) {
             console.log(`Appwrite serive :: getUser :: error`, error);
-            throw error;
+            return null;
         }
     }
 

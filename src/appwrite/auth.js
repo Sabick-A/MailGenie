@@ -1,4 +1,4 @@
-import { Client, Account, ID } from "appwrite";
+import { Client, Account, ID, OAuthProvider } from "appwrite";
 import conf from "../conf/appwriteConf";
 
 export class AuthServices{
@@ -25,6 +25,28 @@ export class AuthServices{
             }
         } catch (error) {
             console.log(`Appwrite serive :: createAccount :: error`,error);
+            throw error;
+        }
+    }
+
+    async createAuthToken(){
+        try {
+            return await this.account.createOAuth2Token(
+                OAuthProvider.Google,
+                "http://localhost:5173/",
+                "http://localhost:5173/auth/signin"
+            )
+        } catch (error) {
+            console.log(`Appwrite serive :: createAuthToken :: error`,error);
+            throw error;
+        }
+    }
+
+    async createSession({userId,secret}){
+        try {
+            return await this.account.createSession(userId,secret);
+        } catch (error) {
+            console.log(`Appwrite serive :: createSession :: error`,error);
             throw error;
         }
     }

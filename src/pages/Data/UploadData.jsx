@@ -34,6 +34,7 @@ function UploadData() {
         setError(null);
     };
 
+    console.log(userData);
     const handleData = async () => {
         setError(null);
         setParsedData(null);
