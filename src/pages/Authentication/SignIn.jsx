@@ -22,6 +22,9 @@ const SignIn = () => {
     } = useForm();
     const [error, setError] = useState("");
 
+    const baseUrl = window.location.origin;
+    const fullUrl = window.location.href;
+
     const formLogin = async (data) => {
         setLoading(true);
         setError("");
@@ -320,7 +323,13 @@ const SignIn = () => {
                                         />
                                     </div>
 
-                                    <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50" type="button" onClick={()=>authService.createAuthToken()}>
+                                    <button
+                                        className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50"
+                                        type="button"
+                                        onClick={() =>
+                                            authService.createAuthToken({baseUrl,fullUrl})
+                                        }
+                                    >
                                         <span>
                                             <svg
                                                 width="20"

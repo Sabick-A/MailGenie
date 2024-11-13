@@ -29,12 +29,29 @@ export class AuthServices{
         }
     }
 
-    async createAuthToken(){
+    async createAuthToken({baseUrl,fullUrl}){
         try {
-            return await this.account.createOAuth2Token(
+            return await this.account.createOAuth2Session(
                 OAuthProvider.Google,
-                "http://localhost:5173/",
-                "http://localhost:5173/auth/signin"
+                baseUrl,
+                fullUrl,
+                [
+                    'openid',
+                    'https://www.googleapis.com/auth/userinfo.email',    // Access primary email address
+                    'https://www.googleapis.com/auth/userinfo.profile',  // Access personal profile information
+                    'https://mail.google.com/',                          // Full access to Gmail (read, write, delete)
+                    'https://www.googleapis.com/auth/gmail.modify',      // Read, compose, and send Gmail emails
+                    'https://www.googleapis.com/auth/gmail.compose',     // Manage drafts and send Gmail emails
+                    'https://www.googleapis.com/auth/gmail.addons.current.action.compose', // Manage drafts and send emails in add-ons
+                    'https://www.googleapis.com/auth/gmail.addons.current.message.action',  // Access emails when add-on is in use
+                    'https://www.googleapis.com/auth/gmail.readonly',    // Read-only access to Gmail
+                    'https://www.googleapis.com/auth/gmail.metadata',    // View email metadata like labels and headers
+                    'https://www.googleapis.com/auth/gmail.insert',      // Add emails into Gmail mailbox
+                    'https://www.googleapis.com/auth/gmail.addons.current.message.metadata', // View metadata when add-on is active
+                    'https://www.googleapis.com/auth/gmail.addons.current.message.readonly', // Read-only access to messages in add-ons
+                    'https://www.googleapis.com/auth/gmail.send',        // Send Gmail emails
+                    'https://www.googleapis.com/auth/gmail.labels'       // View and edit Gmail labels
+                ]
             )
         } catch (error) {
             console.log(`Appwrite serive :: createAuthToken :: error`,error);
@@ -87,8 +104,22 @@ export class AuthServices{
         }
     }
 
+    async getSession(){
+        try {
+            return await this.account.getSession('current');
+        } catch (error) {
+            console.log(`Appwrite serive :: getSession :: error`,error);
+            throw error;
+        }
+    }
 }
 
 const authService=new AuthServices();
 
 export default authService;
+
+
+// // Provider information
+// console.log(session.provider);
+// console.log(session.providerUid);
+// console.log(session.providerAccessToken);

@@ -25,13 +25,11 @@ function App() {
             const query = new URLSearchParams(location.search);
             const userId = query.get("userId");
             const secret = query.get("secret");
-            console.log(userId, secret);
-    
+   
             if(userId && secret){
-                const session=await authService.createSession({userId,secret});
-                console.log(session);
+                await authService.createSession({userId,secret});
             }
-            console.log("App.jsx loaded");
+          
 
             const user = await authService.getCurrentUser();
             if (user) {

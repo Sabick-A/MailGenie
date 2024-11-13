@@ -13,6 +13,7 @@ import DataTable from "../../components/Data/DataTable.jsx";
 import processEntries from "../../utils/Groq/processEntries.js";
 import Loader from "../../common/Loader2/index.jsx";
 import extractKeys from "../../utils/FormData/extractKeys.js";
+import authService from "../../appwrite/auth.js";
 
 function UploadData() {
     const [selectedOption, setSelectedOption] = useState("");
@@ -28,13 +29,21 @@ function UploadData() {
     const dispatch = useDispatch();
     const [parsedData, setParsedData] = useState(null);
     const [showPreview, setShowPreview] = useState(false);
-    const [loading,setLoading]=useState(false);
+    const [loading, setLoading] = useState(false);
     const userData = useSelector((state) => state.auth.userData);
     const closeModal = () => {
         setError(null);
     };
 
-    console.log(userData);
+    const printSession = async () => {
+        const session = await authService.getSession();
+        console.log(session.provider);
+        console.log(session.providerUid);
+        console.log(session.providerAccessToken);
+        console.log(session);
+    };
+
+    printSession();
     const handleData = async () => {
         setError(null);
         setParsedData(null);
@@ -46,8 +55,10 @@ function UploadData() {
                     response.name = getValues("name");
                     response.userId = userData.$id;
                     console.log(response.data);
-                    response.columns = extractKeys(response.data).filter(column => column !== 'email');
-                    setParsedData(response)
+                    response.columns = extractKeys(response.data).filter(
+                        (column) => column !== "email"
+                    );
+                    setParsedData(response);
                 } catch (error) {
                     setError(error.message);
                 }
@@ -67,20 +78,18 @@ function UploadData() {
             //         }
             //     }
         }
-        
     };
-
 
     const saveData = async (data) => {
         setError(null);
         setLoading(true);
         try {
-            for(const column of parsedData.columns){
-                if(!data.prompt.includes(`{{${column}}}`)){
+            for (const column of parsedData.columns) {
+                if (!data.prompt.includes(`{{${column}}}`)) {
                     throw new Error(`Prompt is missing {{${column}}}`);
                 }
             }
-            const processedData= await processEntries(parsedData, data.prompt);
+            const processedData = await processEntries(parsedData, data.prompt);
             const batch = await databaseService.createBatch({
                 data: processedData.data,
                 name: data.name,
@@ -105,8 +114,7 @@ function UploadData() {
         } catch (error) {
             console.error("Error saving data:", error);
             setError(error.message);
-        }
-        finally{
+        } finally {
             setLoading(false);
         }
     };
@@ -118,7 +126,7 @@ function UploadData() {
 
     return (
         <>
-            {loading &&<Loader/>}
+            {loading && <Loader />}
             <Breadcrumb pageName="Upload Data" />
             {error && <ErrorModal {...{ error, closeModal }} />}
             <form onSubmit={handleSubmit(saveData)}>
