@@ -39,18 +39,10 @@ export class AuthServices{
                     'openid',
                     'https://www.googleapis.com/auth/userinfo.email',    // Access primary email address
                     'https://www.googleapis.com/auth/userinfo.profile',  // Access personal profile information
-                    'https://mail.google.com/',                          // Full access to Gmail (read, write, delete)
                     'https://www.googleapis.com/auth/gmail.modify',      // Read, compose, and send Gmail emails
                     'https://www.googleapis.com/auth/gmail.compose',     // Manage drafts and send Gmail emails
-                    'https://www.googleapis.com/auth/gmail.addons.current.action.compose', // Manage drafts and send emails in add-ons
-                    'https://www.googleapis.com/auth/gmail.addons.current.message.action',  // Access emails when add-on is in use
-                    'https://www.googleapis.com/auth/gmail.readonly',    // Read-only access to Gmail
-                    'https://www.googleapis.com/auth/gmail.metadata',    // View email metadata like labels and headers
-                    'https://www.googleapis.com/auth/gmail.insert',      // Add emails into Gmail mailbox
-                    'https://www.googleapis.com/auth/gmail.addons.current.message.metadata', // View metadata when add-on is active
-                    'https://www.googleapis.com/auth/gmail.addons.current.message.readonly', // Read-only access to messages in add-ons
                     'https://www.googleapis.com/auth/gmail.send',        // Send Gmail emails
-                    'https://www.googleapis.com/auth/gmail.labels'       // View and edit Gmail labels
+
                 ]
             )
         } catch (error) {

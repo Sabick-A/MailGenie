@@ -17,20 +17,9 @@ import Preview from "./pages/Data/Preview";
 import BatchPreview from "./pages/Data/BatchPreview";
 function App() {
     const [loading, setLoading] = useState(true);
-    
     const dispatch = useDispatch();
-    const location = useLocation();
     const checkUser = async () => {
         try {
-            const query = new URLSearchParams(location.search);
-            const userId = query.get("userId");
-            const secret = query.get("secret");
-   
-            if(userId && secret){
-                await authService.createSession({userId,secret});
-            }
-          
-
             const user = await authService.getCurrentUser();
             if (user) {
                 let userData = await databaseService.getUser(user.$id);
