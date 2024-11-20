@@ -13,7 +13,6 @@ import DataTable from "../../components/Data/DataTable.jsx";
 import processEntries from "../../utils/Groq/processEntries.js";
 import Loader from "../../common/Loader2/index.jsx";
 import extractKeys from "../../utils/FormData/extractKeys.js";
-import authService from "../../appwrite/auth.js";
 
 function UploadData() {
     const [selectedOption, setSelectedOption] = useState("");
@@ -35,15 +34,6 @@ function UploadData() {
         setError(null);
     };
 
-    const printSession = async () => {
-        const session = await authService.getSession();
-        console.log(session.provider);
-        console.log(session.providerUid);
-        console.log(session.providerAccessToken);
-        console.log(session);
-    };
-
-    printSession();
     const handleData = async () => {
         setError(null);
         setParsedData(null);

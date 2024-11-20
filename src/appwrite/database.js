@@ -12,15 +12,16 @@ export class DatabaseService {
 
         this.database = new Databases(this.client);
     }
-    async createUser({ id, name, email }) {
+    async createUser({ name, email,picture }) {
         try {
             return await this.database.createDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteUsersCollectionId,
-                id,
+                ID.unique(),
                 {
                     name,
                     email,
+                    picture,
                 }
             );
         } catch (error) {
@@ -29,13 +30,14 @@ export class DatabaseService {
         }
     }
 
-    async getUser(userId) {
+    async getUser(userEmail) {
         try {
-            return await this.database.getDocument(
+            const users = await this.database.listDocuments(
                 conf.appwriteDatabaseId,
                 conf.appwriteUsersCollectionId,
-                userId
+                [Query.equal('email', userEmail)]
             );
+            return users.documents[0];
         } catch (error) {
             console.log(`Appwrite serive :: getUser :: error`, error);
             return null;

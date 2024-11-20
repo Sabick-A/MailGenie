@@ -63,11 +63,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             childrens: [
                 {
                     title: "Upload Data",
-                    slug: "/data/upload",
+                    slug: "/app/data/upload",
                 },
                 {
                     title: "Preview",
-                    slug: "/data/preview",
+                    slug: "/app/data/preview",
                 },
             ],
         },

@@ -8,7 +8,7 @@ function AuthLayout({ children ,authentication=true}) {
     const navigate = useNavigate();
     useEffect(() => {
         if(authentication && authStatus !== authentication){
-            navigate("/auth/signin")
+            navigate("/")
         } else if(!authentication && authStatus !== authentication){
             navigate("/")
         }

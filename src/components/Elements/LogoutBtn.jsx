@@ -1,35 +1,13 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { logout } from "../../store/authSlice";
-import authService from "../../appwrite/auth";
-import Loader2 from "../../common/Loader2";
-import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import React from "react";
 
 function LogoutBtn() {
-    const dispatch = useDispatch();
-    const [loading,setLoading]=useState(false);
-    const navigate=useNavigate();
-    const logouthandler = () => {
-        setLoading(true);
-        authService
-            .logout()
-            .then(() => {
-                setLoading(false);
-                dispatch(logout());
-                navigate("/");
-            })
-            .catch((error) => {
-                setLoading(false);
-                console.log(error);
-                throw error;
-            });
-    };
+    const { logout } = useAuth0();
     return (
         <>
-            {loading && <div className="h-screen"><Loader2 /></div>}
             <button
                 className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
-                onClick={logouthandler}
+                onClick={() => logout({ logoutParams: { returnTo: window.location.origin} })}
             >
                 <svg
                     className="fill-current"
