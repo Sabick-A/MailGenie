@@ -46,7 +46,7 @@ const Login = () => {
                         </defs>
                     </svg>
                 </span>
-                <p className="hidden md:flex">Sign in with Google</p>
+                <p>Sign in with Google</p>
             </button>
             
         </>
