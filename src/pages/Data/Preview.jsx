@@ -63,10 +63,10 @@ function Preview() {
                     <thead>
                         <tr>
                             <th>
-                                <span class="flex items-center">
+                                <span className="flex items-center">
                                     Batch Name
                                     <svg
-                                        class="w-4 h-4 ms-1"
+                                        className="w-4 h-4 ms-1"
                                         aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="24"
@@ -85,10 +85,10 @@ function Preview() {
                                 </span>
                             </th>
                             <th>
-                                <span class="flex items-center">
+                                <span className="flex items-center">
                                     Status
                                     <svg
-                                        class="w-4 h-4 ms-1"
+                                        className="w-4 h-4 ms-1"
                                         aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="24"
@@ -107,10 +107,10 @@ function Preview() {
                                 </span>
                             </th>
                             <th>
-                                <span class="flex items-center">
+                                <span className="flex items-center">
                                     Created At
                                     <svg
-                                        class="w-4 h-4 ms-1"
+                                        className="w-4 h-4 ms-1"
                                         aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="24"
@@ -129,12 +129,12 @@ function Preview() {
                                 </span>
                             </th>
                             <th>
-                                <span class="flex items-center">
+                                <span className="flex items-center">
                                     Open Details
                                 </span>
                             </th>
                             <th>
-                                <span class="flex items-center">
+                                <span className="flex items-center">
                                     Delete Batch
                                 </span>
                             </th>
@@ -143,7 +143,7 @@ function Preview() {
                     <tbody>
                         {userData.batches.map((batch, index) => (
                             <tr key={batch.$id}>
-                                <td class="font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <td className="font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     {batch.name}
                                 </td>
                                 <td>{batch.status}</td>
@@ -152,7 +152,7 @@ function Preview() {
                                     <Link to={`/app/data/preview/${index}`} >
                                         <button
                                             type="button"
-                                            class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                            className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                         >
                                             Open
                                         </button>
@@ -161,7 +161,7 @@ function Preview() {
                                 <td>
                                     <button
                                         type="button"
-                                        class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                        className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                         onClick={(e) =>
                                             handleDelete(
                                                 e.currentTarget.getAttribute(

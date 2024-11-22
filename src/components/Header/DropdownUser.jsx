@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const userData=useSelector((state)=>state.auth.userData);
-  console.log(userData);
+
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { parseCsv } from "../../utils/FormData/parseCsv.js";
 import databaseService from "../../appwrite/database.js";
@@ -13,6 +13,7 @@ import DataTable from "../../components/Data/DataTable.jsx";
 import processEntries from "../../utils/Groq/processEntries.js";
 import Loader from "../../common/Loader2/index.jsx";
 import extractKeys from "../../utils/FormData/extractKeys.js";
+import { useNavigate } from "react-router-dom";
 
 function UploadData() {
     const [selectedOption, setSelectedOption] = useState("");
@@ -44,7 +45,6 @@ function UploadData() {
                     const response = await parseCsv(file);
                     response.name = getValues("name");
                     response.userId = userData.$id;
-                    console.log(response.data);
                     response.columns = extractKeys(response.data).filter(
                         (column) => column !== "email"
                     );
@@ -97,7 +97,6 @@ function UploadData() {
                 );
 
                 dispatch(updateData(updatedData));
-                console.log("Data saved successfully");
                 reset(); // Reset the form after successful submission
                 setParsedData(null);
             }
@@ -114,10 +113,39 @@ function UploadData() {
         "Google Sheets Url": "gsheet",
     };
 
+    const textareaRef = useRef(null);
+    const handleButtonClick = (column) => {
+        const textarea = textareaRef.current;
+        const cursorPos = textarea.selectionStart;
+        const currentValue = textarea.value;
+
+        // Insert the column text at the cursor position
+        const newValue =
+            currentValue.slice(0, cursorPos) +
+            `{{${column}}}` +
+            currentValue.slice(cursorPos);
+
+        // Update the textarea value
+        textarea.value = newValue;
+
+        // Update the form state if needed
+        setValue("prompt", newValue);
+
+        // Move the cursor to the end of the inserted text
+        textarea.setSelectionRange(
+            cursorPos + `{{${column}}}`.length,
+            cursorPos + `{{${column}}}`.length
+        );
+        textarea.focus();
+    };
+
+
+    const navigate=useNavigate();
     return (
         <>
             {loading && <Loader />}
             <Breadcrumb pageName="Upload Data" />
+            {!userData.status && <ErrorModal error="Update Your Profile to Continue" closeModal={()=>navigate("/profile")} />}
             {error && <ErrorModal {...{ error, closeModal }} />}
             <form onSubmit={handleSubmit(saveData)}>
                 <div className="flex flex-col rounded-sm border w-11/12 border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark p-5 gap-5">
@@ -203,6 +231,10 @@ function UploadData() {
                                     {...register("prompt", {
                                         required: "Prompt is required",
                                     })}
+                                    ref={(e) => {
+                                        textareaRef.current = e; // Set the ref manually
+                                        register("prompt").ref(e); // Also pass to react-hook-form
+                                    }}
                                 ></textarea>
                                 {errors.prompt && (
                                     <p className="text-red-600">
@@ -213,16 +245,12 @@ function UploadData() {
                                     {parsedData.columns.map((column, index) => (
                                         <button
                                             onClick={() =>
-                                                setValue(
-                                                    "prompt",
-                                                    getValues("prompt") +
-                                                        `{{${column}}}`
-                                                )
+                                                handleButtonClick(column)
                                             }
                                             span
                                             key={index}
                                             type="button"
-                                            className="inline-flex items-center justify-center rounded-md bg-blue-400 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                                            className="inline-flex items-center justify-center rounded-md bg-blue-400 py-2 px-6 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                                         >
                                             {column}
                                         </button>

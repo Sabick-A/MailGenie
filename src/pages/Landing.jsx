@@ -8,12 +8,11 @@ import { Link, useNavigate } from "react-router-dom";
 import LogoIcon from "../assets/images/logo/logo-icon.png";
 import DarkModeSwitcher from "../components/Header/DarkModeSwitcher";
 import DropdownUser from "../components/Header/DropdownUser";
-import Loader from "../common/Loader";
 import Loader3 from "../common/Loader3";
 function Landing() {
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
-    const { user, isAuthenticated } = useAuth0();
+    const { user, isAuthenticated ,isLoading } = useAuth0();
     const navigate = useNavigate();
     const authStatus = useSelector((state) => state.auth.status);
     const checkUser = async () => {
@@ -28,8 +27,6 @@ function Landing() {
                         picture: user.picture,
                     });
                 }
-                console.log(user);
-                console.log(userData);
                 dispatch(login(userData));
             } else {
                 dispatch(logout());
@@ -49,8 +46,8 @@ function Landing() {
             <div className="dark:bg-boxdark-2 dark:text-bodydark">
                 <div className="flex min-h-screen flex-col">
                     <header>
-                        <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800 w-dvw">
-                            <div class="flex flex-wrap justify-between items-center mx-auto ">
+                        <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800 w-dvw">
+                            <div className="flex flex-wrap justify-between items-center mx-auto ">
                                 <div className="flex items-center gap-10">
                                     <Link
                                         className="block flex-shrink-0 "
@@ -67,27 +64,27 @@ function Landing() {
                                     </p>
                                 </div>
 
-                                <div class="flex items-center justify-end lg:order-1 gap-10 ">
+                                <div className="flex items-center justify-end lg:order-1 gap-10 ">
                                     <DarkModeSwitcher />
                                     {authStatus && <DropdownUser />}
                                 </div>
                             </div>
                         </nav>
                     </header>
-                    <section class="bg-white dark:bg-gray-900 flex items-center flex-grow">
-                        <div class="grid py-8 px-6 mx-auto max-w-screen-xl lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12 ">
-                            <div class="place-self-center mr-auto lg:col-span-7">
-                                <h1 class="mb-4 max-w-2xl text-4xl font-extrabold leading-none md:text-5xl xl:text-6xl dark:text-white">
+                    <section className="bg-white dark:bg-gray-900 flex items-center flex-grow">
+                        <div className="grid py-8 px-6 mx-auto max-w-screen-xl lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12 ">
+                            <div className="place-self-center mr-auto lg:col-span-7">
+                                <h1 className="mb-4 max-w-2xl text-4xl font-extrabold leading-none md:text-5xl xl:text-6xl dark:text-white">
                                     Mailing Just Got Faster
                                 </h1>
-                                <p class="mb-6 max-w-2xl font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
+                                <p className="mb-6 max-w-2xl font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
                                     From managing inboxes to automating email
                                     campaigns, businesses worldwide trust
                                     MailGenie to streamline their email
                                     workflows.
                                 </p>
 
-                                {!loading &&
+                                {!isLoading && !loading &&
                                     (authStatus ? (
                                         <button
                                             onClick={() => {
@@ -102,9 +99,9 @@ function Landing() {
                                         <Login />
                                     ))}
 
-                                {loading && <Loader3 />}
+                                {(isLoading || loading) && <Loader3 />}
                             </div>
-                            <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
+                            <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
                                 <img
                                     src="https://img.freepik.com/free-vector/mail-sent-concept-illustration_114360-96.jpg?t=st=1732125538~exp=1732129138~hmac=954342651b6522af5e108d688b8684d42654def0faeb9e4077b6b85d9ce692d5&w=826"
                                     alt="mockup"
