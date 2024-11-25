@@ -9,13 +9,13 @@ class GroqService {
         });
     }
 
-    async getResponse(prompt) {
+    async getResponse(systemPrompt,prompt,isJson=false) {
         try {
             const completion = await this.groq.chat.completions.create({
                 messages: [
                     {
                         role: "system",
-                        content: conf.systemMessage,
+                        content: systemPrompt,
                     },
                     {
                         role: "user",
@@ -23,6 +23,9 @@ class GroqService {
                     },
                 ],
                 model: "llama3-8b-8192",
+                response_format:{
+                    type: isJson?"json_object":"text",
+                }
             });
 
             return completion.choices[0].message.content;

@@ -1,4 +1,5 @@
 import groqSerivce from "."
+import conf from "../../conf/groqConf";
 
 async function processEntries(parsedData, promptTemplate) {
   // Loop through each entry in parsedData.data
@@ -17,18 +18,18 @@ async function processEntries(parsedData, promptTemplate) {
         
         // Replace placeholders for each field in "others"
         for (const [otherKey, otherValue] of Object.entries(othersObj)) {
-          prompt = prompt.replace(new RegExp(`{{${otherKey}}}`, 'g'), otherValue);
+          prompt = prompt.replace(new RegExp(`{${otherKey}}`, 'g'), otherValue);
         }
       } else {
         // Replace placeholder with value for each main entry key
-        prompt = prompt.replace(new RegExp(`{{${key}}}`, 'g'), value || "");
+        prompt = prompt.replace(new RegExp(`{${key}}`, 'g'), value || "");
       }
     }
 
     try {
       // Send the prompt to the API
       console.log(prompt);
-      const response = await groqSerivce.getResponse(prompt);
+      const response = await groqSerivce.getResponse(conf.emailSystemMessage,prompt);
       // Add the API response to the entry
       entry.response = response;
       console.log(response);

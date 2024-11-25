@@ -103,16 +103,16 @@ function BatchPreview() {
                 />
             )}
             <div >
-                <h2 className="text-xl my-5  text-black-2 font-satoshi font-bold">
+                <h2 className="text-xl my-5  text-black-2 dark:text-white font-satoshi font-bold">
                     Prompt
                 </h2>
-                <p className="bg-white p-10 rounded-2xl text-black-2">
+                <p className="bg-white p-10 rounded-2xl dark:text-white dark:bg-boxdark text-black-2">
                     {batchData.prompt}
                 </p>
             </div>
 
             <div>
-                <h2 className="text-xl my-5 text-black-2 font-satoshi font-bold">
+                <h2 className="text-xl my-5 dark:text-white  text-black-2 font-satoshi font-bold">
                     Data Available
                 </h2>
                 <table id="pagination-table">
@@ -252,7 +252,7 @@ function BatchPreview() {
                             </th>
                             <th>
                                 <span className="flex items-center">
-                                    Delete Batch
+                                    Delete Data
                                     <svg
                                         className="w-4 h-4 ms-1"
                                         aria-hidden="true"

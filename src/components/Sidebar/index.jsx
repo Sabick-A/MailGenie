@@ -59,7 +59,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     const sideBarItems = [
         {
             title: "Data Management",
-            slug: "/data",
+            slug: "/app/data",
             childrens: [
                 {
                     title: "Upload Data",
