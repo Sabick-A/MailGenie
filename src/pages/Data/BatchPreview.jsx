@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
-import {  useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import databaseService from "../../appwrite/database";
 import { DataTable } from "simple-datatables";
 import { useDispatch, useSelector } from "react-redux";
@@ -64,7 +64,10 @@ function BatchPreview() {
             dispatch(updateData(updatedUserData));
 
             // Set the updated batch data
-            setBatchData((prevBatchData) => ({ ...prevBatchData, data: updatedData }));
+            setBatchData((prevBatchData) => ({
+                ...prevBatchData,
+                data: updatedData,
+            }));
 
             // Reinitialize the DataTable to apply changes
             const dataTableElement =
@@ -102,10 +105,19 @@ function BatchPreview() {
                     closeModal={() => setShowResponse(false)}
                 />
             )}
-            <div >
-                <h2 className="text-xl my-5  text-black-2 dark:text-white font-satoshi font-bold">
-                    Prompt
-                </h2>
+            <div>
+                <div className="flex justify-between items-center">
+                    <h2 className="text-xl my-5  text-black-2 dark:text-white font-satoshi font-bold">
+                        Prompt
+                    </h2>
+                    <button
+                        type="button"
+                        className="py-3 px-10 me-10 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    >
+                        Start Sending
+                    </button>
+                </div>
+
                 <p className="bg-white p-10 rounded-2xl dark:text-white dark:bg-boxdark text-black-2">
                     {batchData.prompt}
                 </p>
@@ -231,45 +243,11 @@ function BatchPreview() {
                             <th>
                                 <span className="flex items-center">
                                     Email Preview
-                                    <svg
-                                        className="w-4 h-4 ms-1"
-                                        aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            stroke="currentColor"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="m8 15 4 4 4-4m0-6-4-4-4 4"
-                                        />
-                                    </svg>
                                 </span>
                             </th>
                             <th>
                                 <span className="flex items-center">
                                     Delete Data
-                                    <svg
-                                        className="w-4 h-4 ms-1"
-                                        aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            stroke="currentColor"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="m8 15 4 4 4-4m0-6-4-4-4 4"
-                                        />
-                                    </svg>
                                 </span>
                             </th>
                         </tr>

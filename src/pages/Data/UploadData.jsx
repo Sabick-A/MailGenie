@@ -353,7 +353,7 @@ function UploadData() {
                                     <button
                                         type="button"
                                         onClick={() => getTemplates()}
-                                        class="relative list-none flex items-center justify-center border-0 bg-transparent dark:bg-green-200  bg-blue-300 m-3 dark:text-black-2  rounded-full  py-3 px-6 text-xs font-medium text-white hover:bg-opacity-90 space-x-5"
+                                        class="relative list-none flex items-center justify-center border-0 bg-transparent  bg-green-200  m-3 dark:text-black-2  rounded-full  py-3 px-6 text-xs font-medium text-white hover:bg-opacity-90 space-x-5"
                                     >
                                         <span class="relative flex items-center justify-center">
                                             <svg
